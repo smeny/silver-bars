@@ -31,9 +31,9 @@ class LiveOrderBoardTest {
         List<String> buyOrders = orderBoard.listOrdersForType(OrderType.BUY);
         List<String> sellOrders = orderBoard.listOrdersForType(OrderType.SELL);
 
-        assertFalse(buyOrders.isEmpty());
+        assertFalse(buyOrders.isEmpty(), "BUY orders should contain a new registered order");
+        assertTrue(sellOrders.isEmpty(), "Registering a BUY order should not affect SELL orders");
         assertEquals("3.5 kg for £303", buyOrders.get(0));
-        assertTrue(sellOrders.isEmpty());
     }
 
     @Test
@@ -43,9 +43,29 @@ class LiveOrderBoardTest {
         List<String> buyOrders = orderBoard.listOrdersForType(OrderType.BUY);
         List<String> sellOrders = orderBoard.listOrdersForType(OrderType.SELL);
 
-        assertTrue(buyOrders.isEmpty());
-        assertFalse(sellOrders.isEmpty());
+        assertTrue(buyOrders.isEmpty(), "Registering a SELL order should not affect BUY orders");
+        assertFalse(sellOrders.isEmpty(), "SELL orders should contain a new registered order");
         assertEquals("3.5 kg for £303", sellOrders.get(0));
+    }
+
+    @Test
+    void deleteShouldRemoveOrder() {
+        String orderId1 = orderBoard.registerOrder("user1", 3.5, 303, OrderType.BUY);
+        String orderId2 = orderBoard.registerOrder("user2", 5.5, 306, OrderType.BUY);
+        String orderId3 = orderBoard.registerOrder("user3", 4, 310, OrderType.SELL);
+
+        orderBoard.deleteOrder(orderId1);
+
+        List<String> buyOrders = orderBoard.listOrdersForType(OrderType.BUY);
+        List<String> sellOrders = orderBoard.listOrdersForType(OrderType.SELL);
+        assertEquals(1, buyOrders.size(), "Deleting one BUY order should bring the count down by 1");
+        assertEquals(1, sellOrders.size(), "Deleting a BUY order should not affect SELL orders");
+        assertEquals("5.5 kg for £306", buyOrders.get(0));
+    }
+
+    @Test
+    void ordersForSamePriceShouldBeMerged() {
+
     }
 
 }

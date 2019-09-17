@@ -9,17 +9,21 @@ class LiveOrderBoard {
 
     private List<Order> orders = new ArrayList<>();
 
-    String registerOrder(String userId, double quantity, int price, OrderType orderType) {
+    public String registerOrder(String userId, double quantity, int price, OrderType orderType) {
         Order order = new Order(userId, quantity, price, orderType);
         orders.add(order);
         return order.getOrderId();
     }
 
-    List<String> listOrdersForType(OrderType orderType) {
+    public List<String> listOrdersForType(OrderType orderType) {
         return orders.stream()
                 .filter(order -> order.getOrderType().equals(orderType))
                 .map(this::displayOrder)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteOrder(String orderId) {
+        orders.removeIf(order -> order.getOrderId().equals(orderId));
     }
 
     private String displayOrder(Order order) {
