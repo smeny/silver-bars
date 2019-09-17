@@ -25,7 +25,7 @@ class LiveOrderBoardTest {
     }
 
     @Test
-    void registerbuySummaryhouldUpdateBoard() {
+    void registerBuyOrderShouldUpdateBoard() {
         String orderId = orderBoard.registerOrder("user1", 3.5, 303, OrderType.BUY);
 
         List<String> buySummary = orderBoard.summaryForOrderType(OrderType.BUY);
@@ -37,7 +37,7 @@ class LiveOrderBoardTest {
     }
 
     @Test
-    void registersellSummaryhouldUpdateBoard() {
+    void registerSellOrderShouldUpdateBoard() {
         String orderId = orderBoard.registerOrder("user1", 3.5, 303, OrderType.SELL);
 
         List<String> buySummary = orderBoard.summaryForOrderType(OrderType.BUY);
