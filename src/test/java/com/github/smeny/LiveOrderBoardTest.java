@@ -89,4 +89,19 @@ class LiveOrderBoardTest {
         assertEquals("1.2 kg for £310", sellSummary.get(2));
     }
 
+    @Test
+    void buyOrdersShouldAppearDescendingOnSummary() {
+        orderBoard.registerOrder("user1", 3.5, 306, OrderType.BUY);
+        orderBoard.registerOrder("user2", 1.2, 310, OrderType.BUY);
+        orderBoard.registerOrder("user3", 1.5, 307, OrderType.BUY);
+        orderBoard.registerOrder("user4", 2.0, 306, OrderType.BUY);
+
+        List<String> buySummary = orderBoard.summaryForOrderType(OrderType.BUY);
+
+        assertEquals(3, buySummary.size(), "There are only three distinct order prices");
+        assertEquals("1.2 kg for £310", buySummary.get(0));
+        assertEquals("1.5 kg for £307", buySummary.get(1));
+        assertEquals("5.5 kg for £306", buySummary.get(2));
+    }
+
 }

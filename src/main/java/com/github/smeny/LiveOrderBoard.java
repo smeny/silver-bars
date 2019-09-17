@@ -25,12 +25,6 @@ class LiveOrderBoard {
         orders.removeIf(order -> order.getOrderId().equals(orderId));
     }
 
-    private String displayQuantityPerPrice(double quantity, int price) {
-        //  If the precision is less than the number of digits which would appear after the decimal point in the string returned by Float.toString(float)
-        //  or Double.toString(double) respectively, then the value will be rounded using the round half up algorithm.
-        return String.format(Locale.UK, "%.1f kg for £%d", quantity, price);
-    }
-
     private Map<Integer, Double> getTotalQuantityByPrice(OrderType orderType) {
         return orders.stream()
                 .filter(order -> order.getOrderType().equals(orderType))
@@ -47,7 +41,17 @@ class LiveOrderBoard {
     }
 
     private Comparator<Map.Entry<Integer, Double>> compareForOrderType(OrderType orderType) {
-        return Comparator.comparing(Map.Entry::getKey);
+        Comparator<Map.Entry<Integer, Double>> comparator = Comparator.comparingInt(Map.Entry::getKey);
+        if (orderType == OrderType.BUY) {
+            return comparator.reversed();
+        }
+        return comparator;
+    }
+
+    private String displayQuantityPerPrice(double quantity, int price) {
+        //  If the precision is less than the number of digits which would appear after the decimal point in the string returned by Float.toString(float)
+        //  or Double.toString(double) respectively, then the value will be rounded using the round half up algorithm.
+        return String.format(Locale.UK, "%.1f kg for £%d", quantity, price);
     }
 
 }
