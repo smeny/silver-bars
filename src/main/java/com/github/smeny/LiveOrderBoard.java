@@ -3,7 +3,11 @@ package com.github.smeny;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.toList;
 
 class LiveOrderBoard {
 
@@ -15,20 +19,26 @@ class LiveOrderBoard {
         return order.getOrderId();
     }
 
-    public List<String> listOrdersForType(OrderType orderType) {
-        return orders.stream()
+    public List<String> summaryForOrderType(OrderType orderType) {
+        Map<Integer, Double> quantityByPrice = orders.stream()
                 .filter(order -> order.getOrderType().equals(orderType))
-                .map(this::displayOrder)
-                .collect(Collectors.toList());
+                .collect(Collectors.groupingBy(Order::getPrice, reducing(
+                        0.0, Order::getQuantity, Double::sum
+                )));
+
+        return quantityByPrice.entrySet().stream()
+                .map(entry -> displayQuantityPerPrice(entry.getValue(), entry.getKey()))
+                .collect(toList());
     }
 
     public void deleteOrder(String orderId) {
         orders.removeIf(order -> order.getOrderId().equals(orderId));
     }
 
-    private String displayOrder(Order order) {
+    private String displayQuantityPerPrice(double quantity, int price) {
         //  If the precision is less than the number of digits which would appear after the decimal point in the string returned by Float.toString(float)
         //  or Double.toString(double) respectively, then the value will be rounded using the round half up algorithm.
-        return String.format(Locale.UK, "%.1f kg for £%d", order.getQuantity(), order.getPrice());
+        return String.format(Locale.UK, "%.1f kg for £%d", quantity, price);
     }
+
 }
