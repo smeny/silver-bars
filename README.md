@@ -7,7 +7,7 @@ The goal of this TDD exercise is to implement a library used by a live order boa
 * Delete an order
 * Display a summary for each order type
 
-## Requirements
+### Requirements
 * An order contains: a user ID, a quantity, a price and an order type (BUY / SELL)
 * Orders for the same price (and type) are merged on the summary (quantity summed)
 * BUY orders summary is ordered by highest price first (descending order)
